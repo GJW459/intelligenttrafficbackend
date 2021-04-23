@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gjw.intelligenttrafficbackend.dao.RoleDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.gjw.intelligenttrafficbackend.entity.Role">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="status" property="status" />
+        <result column="update_time" property="updateTime" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <resultMap id="roleMap" type="com.gjw.intelligenttrafficbackend.entity.Role">
+        <id property="id" column="rid"/>
+        <result property="name" column="rname"/>
+        <collection property="permissions" javaType="list" ofType="com.gjw.intelligenttrafficbackend.entity.Permission">
+            <id property="id" column="pid"/>
+            <result property="title" column="ptitle"/>
+            <result property="action" column="paction"/>
+        </collection>
+    </resultMap>
+    
+    <select id="findPermissionsByRoleId" parameterType="int" resultMap="roleMap">
+        select r.id as rid,r.name as rname,p.id as pid,p.title as ptitle,p.action as paction from role as r
+        LEFT JOIN role_permission on role_permission.role_id=r.id
+        LEFT JOIN permission as p on role_permission.permission_id=p.id
+        where r.id=#{id}
+    </select>
+</mapper>
